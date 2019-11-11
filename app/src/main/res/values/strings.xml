@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ℚ𝕌𝕀ℤ</string>
+    <string name="play">ℙ𝕃𝔸𝕐</string>
+    <string name="records">ℝ𝔼ℂ𝕆ℝ𝔻𝕊</string>
+    <string name="loading">Ⓛⓞⓐⓓⓘⓝⓖ</string>
+    <string name="you_name">𝔼𝕟𝕥𝕖𝕣 𝕪𝕠𝕦𝕣 𝕟𝕒𝕞𝕖:</string>
+    <string name="easy">𝔼𝔸𝕊𝕐</string>
+    <string name="medium">𝕄𝔼𝔻𝕀𝕌𝕄</string>
+    <string name="hard">ℍ𝔸ℝ𝔻</string>
+    <string name="noClick">НЕ НАЖИМАТЬ!</string>
+    <string name="number">Вопрос номер N!</string>
+    <string name="todo">TODO</string>
+    <string name="name">name</string>
+    <string name="mod">MOD</string>
+    <string name="point">point</string>
+</resources>

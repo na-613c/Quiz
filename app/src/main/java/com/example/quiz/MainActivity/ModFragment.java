@@ -1,9 +1,5 @@
 package com.example.quiz.MainActivity;
 
-/****************************************
- *      created by Shavlovskii Ivan     *
- *               09.11.2019             *
- ***************************************/
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -21,7 +17,7 @@ import android.widget.TextView;
 
 import com.example.quiz.Data.Launcher;
 import com.example.quiz.Data.PlayerInformation;
-import com.example.quiz.Data.WaitRequestRetrofit;
+import com.example.quiz.Retrofit.WaitRequestRetrofit;
 import com.example.quiz.GameActivity.GameActivity;
 import com.example.quiz.R;
 import com.example.quiz.Retrofit.Retrofit;
@@ -175,6 +171,8 @@ public class ModFragment extends Fragment {
             i.setEnabled(false);
         }
     }
+
+
 
 
 }

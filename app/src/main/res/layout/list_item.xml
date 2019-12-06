@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/name"
-            android:textColor="#FFFF"
+            android:textColor="#fff"
             android:textSize="30sp" />
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mod"
-            android:textColor="#D5FFFF"
+            android:textColor="#fff"
             android:textSize="20sp" />
 
     </LinearLayout>
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/point"
-        android:textColor="#FFD5DD"
+        android:textColor="#fff"
         android:textSize="40sp" />
 
 

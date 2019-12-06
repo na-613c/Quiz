@@ -1,9 +1,5 @@
 package com.example.quiz.Data;
 
-/****************************************
- *      created by Shavlovskii Ivan     *
- *               06.11.2019             *
- ***************************************/
 
 import java.io.Serializable;
 

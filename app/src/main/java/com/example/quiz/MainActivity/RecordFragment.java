@@ -1,16 +1,10 @@
 package com.example.quiz.MainActivity;
 
-/****************************************
- *      created by Shavlovskii Ivan     *
- *               10.11.2019             *
- ***************************************/
-
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +15,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quiz.Data.PlayerInformation;
-import com.example.quiz.Data.PlayerInformationComparator;
+import com.example.quiz.PlayerInformationComparator;
 import com.example.quiz.R;
 import com.example.quiz.RecyclerView.DataAdapter;
 import com.google.firebase.database.ChildEventListener;
@@ -50,7 +44,7 @@ public class RecordFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.record_fragment, null);
 
-        final RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.list);
+
 
         Button btnPlay = (Button) v.findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +56,7 @@ public class RecordFragment extends Fragment {
                         .commit();
             }
         });
-
+        final RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.list);
 
         /******************** создаем адаптер *******************/
         final DataAdapter adapter = new DataAdapter(inflater.getContext(), gameRecords);
@@ -78,11 +72,7 @@ public class RecordFragment extends Fragment {
                 PlayerInformation playerInformationFromDb = dataSnapshot.getValue(PlayerInformation.class);
 
                 assert playerInformationFromDb != null;
-                String str = playerInformationFromDb.getMod() + " "
-                        + playerInformationFromDb.getUserName() + " "
-                        + playerInformationFromDb.getNumberOfPoints() + " ";
 
-                Log.d("______", str);
                 gameRecords.add(playerInformationFromDb);
 
                 PlayerInformationComparator playerInformationComparator = new PlayerInformationComparator();
@@ -90,7 +80,7 @@ public class RecordFragment extends Fragment {
 
                 adapter.updateItems();
 
-                int black = Color.rgb(0, 0, 30);
+                int black = Color.rgb(255, 255, 255);
                 v.findViewById(R.id.list).setBackgroundColor(black);
 
             }

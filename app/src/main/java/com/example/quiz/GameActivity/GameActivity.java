@@ -1,9 +1,5 @@
 package com.example.quiz.GameActivity;
 
-/****************************************
- *      created by Shavlovskii Ivan     *
- *               06.11.2019             *
- ***************************************/
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.quiz.R;
 
 
+@SuppressWarnings("ALL")
 public class GameActivity extends AppCompatActivity {
 
     static final String TAG = "-- myLogs -----";

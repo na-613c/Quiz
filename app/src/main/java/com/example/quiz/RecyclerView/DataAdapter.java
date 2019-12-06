@@ -1,13 +1,7 @@
 package com.example.quiz.RecyclerView;
 
-/****************************************
- *      created by Shavlovskii Ivan     *
- *               10.11.2019             *
- ***************************************/
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,23 +44,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull DataAdapter.ViewHolder holder, int position) {
         PlayerInformation playerInformation = gameRecords.get(position);
 
-        int gold = Color.rgb(255, 215, 0);
-        int silver = Color.rgb(197, 201, 199);
-        int bronze = Color.rgb(205, 127, 50);
-
-        switch (position) {
-            case 0:
-                holder.numberOfPointsView.setTextColor(gold);
-                break;
-
-            case 1:
-                holder.numberOfPointsView.setTextColor(silver);
-                break;
-
-            case 2:
-                holder.numberOfPointsView.setTextColor(bronze);
-                break;
-        }
 
         holder.userNameView.setText(playerInformation.getUserName());
         holder.modView.setText(playerInformation.getMod());

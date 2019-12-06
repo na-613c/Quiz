@@ -1,10 +1,5 @@
 package com.example.quiz.GameActivity;
 
-/****************************************
- *      created by Shavlovskii Ivan     *
- *               09.11.2019             *
- ***************************************/
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,13 +13,14 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.quiz.Data.AnswerCounter;
-import com.example.quiz.Data.Firebase;
+import com.example.quiz.Data.Counter;
 import com.example.quiz.Data.Launcher;
 import com.example.quiz.Data.PlayerInformation;
-import com.example.quiz.Data.PointCounter;
+import com.example.quiz.Data.QuizListModel;
+import com.example.quiz.Firebase;
 import com.example.quiz.MainActivity.MainActivity;
 import com.example.quiz.R;
+import com.example.quiz.Retrofit.Model.Result;
 import com.example.quiz.Retrofit.Retrofit;
 
 import java.util.ArrayList;
@@ -37,7 +33,6 @@ public class PageFragment extends Fragment {
 
     private ArrayList<Button> allBtn = new ArrayList<>();
 
-    private List resultAnswers = new ArrayList<>();
     private List<String> answersArr = new ArrayList<>();
 
     private int pageNumber;
@@ -45,9 +40,9 @@ public class PageFragment extends Fragment {
 
     private static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
 
-    private AnswerCounter answerCounter = Launcher.answerCounter;
+    private Counter answerCounter = Launcher.answerCounter;
     private PlayerInformation playerInformation = Launcher.playerInformation;
-    private PointCounter pointCounter = Launcher.pointCounter;
+    private Counter pointCounter = Launcher.pointCounter;
     private Retrofit retrofit = Launcher.retrofit;
 
 
@@ -94,17 +89,15 @@ public class PageFragment extends Fragment {
         final TextView question_number = (TextView) view.findViewById(R.id.question_number);
 
 
-        resultAnswers = retrofit.getAllAnswers(pageNumber);
+        Result quizInformationForPage = QuizListModel.quizList.get(pageNumber);
 
 
         question_number.setText("Question № " + ++pageNumber);
-        question.setText(resultAnswers.get(4) + "");
+        question.setText(quizInformationForPage.getQuestion() + "");
 
 
-        for (int i = 0; i < 4; i++) {
-            answersArr.add(resultAnswers.get(i) + ""); // записываем все ответы
-        }
-
+        answersArr = quizInformationForPage.getIncorrectAnswers();
+        answersArr.add(quizInformationForPage.getCategory());
 
         Collections.shuffle(answersArr);
 
@@ -150,23 +143,23 @@ public class PageFragment extends Fragment {
                     int green = Color.rgb(100, 255, 0);
                     int red = Color.rgb(255, 0, 0);
 
-                    if (button.getText().toString().equals(resultAnswers.get(3) + "")) { // правильный ответ
+                    if (button.getText().toString().equals(quizInformationForPage.getCorrectAnswer() + "")) { // правильный ответ
                         button.setBackgroundColor(green);
                         /** ****** счётчик ответов правильных ответов величился ****** **/
-                        pointCounter.setPointCounter(pointCounter.getPointCounter() + 1);
+                        pointCounter.setCounter(pointCounter.getCounter() + 1);
 
                     } else { // ошибка
                         button.setBackgroundColor(red);
                         /** ****** счётчик правильных ответов не увеличился ****** **/
-                        pointCounter.setPointCounter(pointCounter.getPointCounter());
+                        pointCounter.setCounter(pointCounter.getCounter());
                     }
                     /** ****** счётчик отвтов на вопросы ****** **/
-                    answerCounter.setAnswerCounter(answerCounter.getAnswerCounter() + 1);
+                    answerCounter.setCounter(answerCounter.getCounter() + 1);
 
                     /** ****************** когда ответил на последний вопрос* ******************* **/
-                    if (answerCounter.getAnswerCounter() >= 10) {
+                    if (answerCounter.getCounter() >= 10) {
 
-                        playerInformation.setNumberOfPoints(pointCounter.getPointCounter());
+                        playerInformation.setNumberOfPoints(pointCounter.getCounter());
 
                         /** ****************** добавляем имя, если оно не указанно ******************* **/
                         if (playerInformation.getUserName().equals(""))

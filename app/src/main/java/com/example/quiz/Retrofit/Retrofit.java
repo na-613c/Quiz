@@ -1,171 +1,101 @@
 package com.example.quiz.Retrofit;
 
-/****************************************
- *      created by Shavlovskii Ivan     *
- *               08.11.2019             *
- ***************************************/
 
-
-import android.annotation.SuppressLint;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import androidx.annotation.NonNull;
+
+import com.example.quiz.Data.QuizListModel;
+import com.example.quiz.Retrofit.Model.Result;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Retrofit {
 
-
-    private List<List> allAnswers = new ArrayList<>();
-    private Call<String> call;
-
-    public List getAllAnswers(Integer index) {
-        return allAnswers.get(index);
-    }
-
-    public List getListAllAnswers() {
-        return allAnswers;
-    }
+    private Observable<com.example.quiz.Retrofit.Model.RetroModel> observable;
 
 
-
-    public void getResponse(String mod){
+    public void getResponse(String mod) {
 
         retrofit2.Retrofit retrofit;
 
         retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl("https://opentdb.com/")
-                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())     //В 2.0.0+, вам нужно явно указать, что вы хотите конвертер Gson
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())      //RXjava2 */
                 .build();
 
-        switch (mod){
-            case "Easy":
-                EasyInterface apiEasy = retrofit.create(EasyInterface.class);
-                call = apiEasy.getString();
-                break;
+        QuizListModel quizListModel = new QuizListModel();
+        quizListModel.newQuizList();
 
-            case "Medium":
-                MediumInterface apiMedium = retrofit.create(MediumInterface.class);
-                call = apiMedium.getString();
-                break;
+        ApiInterface api = retrofit.create(ApiInterface.class);
 
-            case "Hard":
-                HardInterface apiHard = retrofit.create(HardInterface.class);
-                call = apiHard.getString();
-                break;
-        }
+        observable = api.getString("api.php?amount=10&category=27&difficulty=" + mod.toLowerCase() + "&type=multiple");
+
+        observable.subscribeOn(Schedulers.newThread()) //отдаем новый тред для работы в background
+                .observeOn(AndroidSchedulers.mainThread()) //говорим, что обсервить хотим в main thread
+                .subscribe(new Observer<com.example.quiz.Retrofit.Model.RetroModel>() {
+
+                               @Override
+                               public void onSubscribe(Disposable d) {
+                                   Log.d("__rx_1", "onSubscribe" + d.toString());
+                               }
+
+                               @Override
+                               public void onNext(com.example.quiz.Retrofit.Model.RetroModel value) {
+
+                                   for (int i = 0; i < 10; i++) {
+                                       Result resultQuizList = value.getResults().get(i);
+
+                                       resultQuizList.setQuestion(fixHtmlText(resultQuizList.getQuestion()));
+                                       resultQuizList.setCorrectAnswer(fixHtmlText(resultQuizList.getCorrectAnswer()));
+
+                                       List<String> newIncorrectAnswers = new ArrayList<>();
+                                       for (int j = 0; j < 3; j++) {
+                                           String incorrectAnswer = resultQuizList.getIncorrectAnswers().get(j);
+                                           newIncorrectAnswers.add(fixHtmlText(incorrectAnswer));
+                                       }
+                                       resultQuizList.setIncorrectAnswers(newIncorrectAnswers);
+
+                                       QuizListModel.quizList.add(resultQuizList); //заполняем список для квиза
+                                   }
 
 
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.i("Responsestring", response.body().toString());
-                //Toast.makeText()
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
+                                   Log.d("__rx_2", "onNext");
+                               }
 
+                               @Override
+                               public void onError(Throwable e) {
+                                   Log.d("__rx_3", "onError " + e);
+                               }
 
-                        String jsonresponse = response.body().toString()
-                                .replaceAll("&rsquo;", "’")
-                                .replaceAll("\u0101", "a")
-                                .replaceAll("\u014d", "o")
-                                .replaceAll("&quot;", "“")
-                                .replaceAll("&#039;", "'");
-
-                        Log.i("onSuccess", jsonresponse);
-
-
-                         writeTv(jsonresponse);
-
-                    } else {
-                        Log.i("onEmptyResponse", "Returned empty response");
-                    }
-                } else Log.i("________ERR", "DISCONECT");
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
-            }
-        });
+                               @Override
+                               public void onComplete() {
+                                   Log.d("__rx_4", "onComplete");
+                               }
+                           }
+                );
 
 
     }
 
-
-
-    @SuppressLint("SetTextI18n")
-    private void writeTv(String response){
-
-        try {
-            //getting the whole json object from the response
-            JSONObject obj = new JSONObject(response);
-            if(obj.optString("response_code").equals("0")){
-
-                ArrayList<RetroModel> retroModelArrayList = new ArrayList<>();
-                JSONArray dataArray  = obj.getJSONArray("results");
-
-                for (int i = 0; i < dataArray.length(); i++) {
-
-                    RetroModel retroModel = new RetroModel();
-                    JSONObject dataobj = dataArray.getJSONObject(i);
-
-                    /****************************************************************************/
-                    int jsonArrayLenght = dataobj.getJSONArray("incorrect_answers").length();
-                    Log.i("TAG___",""+jsonArrayLenght);
-
-                    List<String> tempList = new ArrayList<String>(jsonArrayLenght);
-
-
-                    for(int j =0; j < jsonArrayLenght;j++) {
-                        tempList.add(dataobj.getJSONArray("incorrect_answers").getString(j));
-                    }
-
-                    /****************************************************************************/
-
-
-                    retroModel.setCategory(dataobj.getString("category"));
-                    retroModel.setType(dataobj.getString("type"));
-                    retroModel.setDifficulty(dataobj.getString("difficulty"));
-                    retroModel.setQuestion(dataobj.getString("question"));
-                    retroModel.setCorrect_answer(dataobj.getString("correct_answer"));
-
-                    /****************************************************************************/
-                    retroModel.setIncorrectAnswers(tempList);
-                    /****************************************************************************/
-
-
-                    retroModelArrayList.add(retroModel);
-
-                }
-
-                for (int j = 0; j < retroModelArrayList.size(); j++){
-
-                    List<String> answers = retroModelArrayList.get(j).getIncorrectAnswers();
-                    answers.add(retroModelArrayList.get(j).getCorrect_answer());
-                    answers.add(retroModelArrayList.get(j).getQuestion());
-
-                    allAnswers.add(answers);
-                    Log.d("__RETROFIT_","allAnswers full");
-
-                }
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+    @NonNull
+    private String fixHtmlText(String string) {
+        return string.replaceAll("&rsquo;", "’")
+                .replaceAll("\u0101", "a")
+                .replaceAll("\u014d", "o")
+                .replaceAll("&quot;", "“")
+                .replaceAll("&#039;", "'");
     }
-
-
 
 
 }

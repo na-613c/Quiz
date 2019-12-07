@@ -1,6 +1,6 @@
 package com.example.quiz.Data;
 
-import com.example.quiz.Retrofit.Model.Result;
+import com.example.quiz.Request.Model.Result;
 
 import java.util.ArrayList;
 import java.util.List;

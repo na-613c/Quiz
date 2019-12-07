@@ -20,7 +20,7 @@ import com.example.quiz.Data.QuizListModel;
 import com.example.quiz.Firebase;
 import com.example.quiz.MainActivity.MainActivity;
 import com.example.quiz.R;
-import com.example.quiz.Retrofit.Model.Result;
+import com.example.quiz.Request.Model.Result;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,7 +100,9 @@ public class PageFragment extends Fragment {
         allBtn.add(btnAnswer2);
         allBtn.add(btnAnswer3);
 
-        question_number.setText("Question № " + ++pageNumber);
+
+
+        question_number.setText("Question № " + (pageNumber+1));
 
         quizInformationForPage = QuizListModel.quizList.get(pageNumber);
 

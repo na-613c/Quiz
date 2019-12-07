@@ -17,10 +17,10 @@ import android.widget.TextView;
 
 import com.example.quiz.Data.Launcher;
 import com.example.quiz.Data.PlayerInformation;
-import com.example.quiz.Retrofit.WaitRequestRetrofit;
+import com.example.quiz.Request.Expectation;
 import com.example.quiz.GameActivity.GameActivity;
 import com.example.quiz.R;
-import com.example.quiz.Retrofit.Retrofit;
+import com.example.quiz.Request.NetworkRequest;
 
 import java.util.ArrayList;
 
@@ -38,7 +38,7 @@ public class ModFragment extends Fragment {
     private TextView name;
 
     private PlayerInformation playerInformation;
-    private Retrofit retrofit;
+    private NetworkRequest networkRequest;
     private String userName;
 
 
@@ -50,7 +50,7 @@ public class ModFragment extends Fragment {
 
         Launcher.init();
         playerInformation = Launcher.playerInformation;
-        retrofit = Launcher.retrofit;
+        networkRequest = Launcher.networkRequest;
 
         btnPlayEasy = (Button) v.findViewById(R.id.btnPlayEasy);
         btnPlayMedium = (Button) v.findViewById(R.id.btnPlayMedium);
@@ -60,7 +60,7 @@ public class ModFragment extends Fragment {
         modBtn.add(btnPlayMedium);
         modBtn.add(btnPlayHard);
 
-        /** ****************** Выполнение Retrofit ******************* **/
+        /** ****************** Выполнение NetworkRequest ******************* **/
         @SuppressLint("StaticFieldLeak")
         class TaskToQueryTheNetwork extends AsyncTask<Void, Void, Void> {
 
@@ -71,7 +71,7 @@ public class ModFragment extends Fragment {
             @Override
             protected Void doInBackground(Void... params) {
                 /** ****************** фрагмент загрузки ******************* **/
-                retrofit.getResponse(playerInformation.getMod());
+                networkRequest.getResponse(playerInformation.getMod());
                 loadFragment = new LoadFragment();
                 Bundle bundle = new Bundle();
 
@@ -81,7 +81,7 @@ public class ModFragment extends Fragment {
                 ft.commit();
 
                 /** ****************** Запуск ожидания загрузки ******************* **/
-                WaitRequestRetrofit waitRequest = new WaitRequestRetrofit();
+                Expectation waitRequest = new Expectation();
 
                 try {
                     waitRequest.timeOut();

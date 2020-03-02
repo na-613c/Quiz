@@ -7,7 +7,6 @@
 - Retrofit2
 - RxJava.
 - Firebase.
-- Firebase.
 - Comparator.
 - Glide.
 - Fragment
